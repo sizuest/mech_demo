@@ -42,6 +42,12 @@ class PIDController:
         #     - das aktuelle Fehler-Derivative 'error_derivative'
         self.error_linear = self.reference_value - actual_value
         self.error_integral += self.error_linear * 0.01
+        
+        if self.error_integral * self.kp / self.Tn > self.anti_windup:
+            self.error_integral = self.anti_windup * self.Tn / self.kp
+        elif self.error_integral * self.kp / self.Tn < -self.anti_windup:
+            self.error_integral = -self.anti_windup * self.Tn / self.kp
+
         error_derivative = ( self.error_linear - error_linear_old ) / 0.01
         #  3. Berechnen Sie aus den Fehlern die P, I und D-Anteile;
         #     Sie können diese Werte in den Variablen p_part, i_part
